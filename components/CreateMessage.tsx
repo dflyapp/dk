@@ -44,6 +44,7 @@ function CreateMessage() {
           <button
             onClick={openModal}
             className="uppercase inline-flex items-center rounded-md border border-transparent bg-secondary px-4 py-2 text-base font-light text-white shadow-sm hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:ring-offset-2"
+            disabled
           >
             Viết lời chúc
           </button>

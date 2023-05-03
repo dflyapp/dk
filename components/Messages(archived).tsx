@@ -1,4 +1,6 @@
-import useSWR from 'swr'
+import { useEffect } from 'react'
+import PocketBase from 'pocketbase'
+import useSWR, { useSWRConfig } from 'swr'
 
 type Card = {
   id: string
@@ -10,7 +12,18 @@ type Card = {
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function ComingSoon() {
-  const { data, error } = useSWR(`api/messages`, fetcher)
+  const { data, error } = useSWR(`${process.env.NEXT_PUBLIC_HOST}/api/collections/messages/records`, fetcher)
+  const { mutate } = useSWRConfig()
+
+  useEffect(() => {
+    const client = new PocketBase(process.env.NEXT_PUBLIC_HOST)
+    client.realtime.subscribe('messages', () => {
+      mutate(`${process.env.NEXT_PUBLIC_HOST}/api/collections/messages/records`)
+    })
+    return () => {
+      client.realtime.unsubscribe('messages')
+    }
+  }, [])
 
   if (error) return <p className="text-center my-24">lỗi</p>
   if (!data) return <p className="text-center my-24">đang tải...</p>
